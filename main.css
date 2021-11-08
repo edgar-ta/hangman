@@ -1,5 +1,7 @@
 :root {
     font-family: sans-serif;
+    --hangman-size: 30vmin;
+    --letter-hue: 40;
 }
 
 .navbar {
@@ -23,4 +25,61 @@
     text-align: center;
     font-size: 0.5rem;
     font-style: italic;
+}
+
+.wrapper {
+    display: flex;
+}
+
+.hangman-img {
+    width: var(--hangman-size);
+    height: var(--hangman-size);
+}
+
+.letter-panel {
+    display: grid;
+    grid-template: repeat(3, 1fr) / repeat(9, 1fr);
+    gap: 1vmin;
+    height: 70%;
+}
+
+.letter-panel__button {
+    background-color: hsl(var(--letter-hue), 100%, 50%);
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+.letter-panel__button:hover {
+    background-color: hsl(var(--letter-hue), 100%, 40%);
+}
+
+.guess-form {
+    display: flex;
+    height: 15%;
+    justify-content: space-between;
+}
+
+.guess-form__in {
+    color: black;
+    width: 35%;
+}
+
+.guess-form__in:focus {
+    outline: hsl(220, 100%, 50%) auto 1px;
+}
+
+.guess-form__in--submit {
+    color: white;
+    background-color: hsl(130, 100%, 40%);
+    border: black 1px solid;
+    border-radius: 3px;
+    width: 20%;
+}
+
+.guess-form__in--submit:hover {
+    background-color: hsl(130, 100%, 30%);
+}
+
+.guess-form__in--submit:focus {
+    outline: none;
 }
