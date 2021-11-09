@@ -50,8 +50,8 @@ class Color {
      */
     static toHex(n) {
         let div = ~~(n / 16);
-        let mod = n % 16;
-        return hexDigits[div] + hexDigits[mod];
+        let mod = ~~(n % 16);
+        return Color.hexDigits[div] + Color.hexDigits[mod];
     }
 
     /**
@@ -87,7 +87,19 @@ class Color {
     }
 
     /**
-     * Sums 2 colors into 1
+     * Substracts two colors (their rgbs) and returns a new
+     * color with those values
+     * @param {Color} color First color (the one to substract from)
+     * @param {Color} kolor Second color (the one to substract)
+     * @returns {Color} Resultant color
+     */
+    static sub(color, kolor) {
+        return new Color(color.r - kolor.r, color.g - kolor.g, color.b - kolor.b);
+    }
+
+    /**
+     * Sums two colors (their rgbs) and returns a new
+     * color with those values
      * @param {Color} color First color to sum
      * @param {Color} kolor Second color to sum
      * @returns {Color} Resultant color
@@ -97,7 +109,28 @@ class Color {
     }
 }
 
+/**
+ * Class that emulates the behavior of the hangman.
+ * 
+ * It shows an image of a hangman and it changes the color
+ * of its head to show how hung it is.
+ */
 class Hangman extends HTMLCanvasElement {
+    /**
+     * X coordinate of the head in the image of the hangman
+     */
+    static HEAD_X = 270.75;
+
+    /**
+     * Y coordinate of the head in the image of the hangman
+     */
+    static HEAD_Y = 139;
+
+    /**
+     * Radius of the head in the the image of the hangman
+     */
+    static HEAD_R = 32;
+
 
     /**
      * Remaining number of mistakes a user can make before
@@ -131,14 +164,14 @@ class Hangman extends HTMLCanvasElement {
         let maxMistakes = Number.parseInt(this.getDefaultAttribute("max-mistakes", "10"));
         let initialColor = Color.colorFromHex(this.getDefaultAttribute("initial-color", "#ffffff"));
         let finalColor = Color.colorFromHex(this.getDefaultAttribute("final-color", "#0000ff"));
-        let sum = Color.sum(initialColor, finalColor);
+        let sub = Color.sub(finalColor, initialColor);
 
         this.remainingMistakes = maxMistakes;
         this.currentColor = initialColor;
         this.delta = new Color(
-            sum.r / (maxMistakes + 1),
-            sum.g / (maxMistakes + 1),
-            sum.b / (maxMistakes + 1)
+            sub.r / (maxMistakes + 1),
+            sub.g / (maxMistakes + 1),
+            sub.b / (maxMistakes + 1)
         );
 
         this.setAttribute("class", "hangman-img");
@@ -175,16 +208,20 @@ class Hangman extends HTMLCanvasElement {
      * and colors the head
      */
     advanceStage() {
+        // debugger
         this.currentColor = Color.sum(this.currentColor, this.delta);
         this.remainingMistakes--;
-        colorHead();
+        this.colorHead();
     }
 
     /**
      * Colors the head of the hangman using its current color
      */
     colorHead() {
-        // 
+        let ctx = this.getContext("2d");
+        ctx.fillStyle = this.currentColor.toHex();
+        ctx.ellipse(Hangman.HEAD_X, Hangman.HEAD_Y, Hangman.HEAD_R, Hangman.HEAD_R, 0, 0, 2 * Math.PI);
+        ctx.fill();
     }
 
     /**
