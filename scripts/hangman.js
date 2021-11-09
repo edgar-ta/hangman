@@ -143,15 +143,24 @@ class Hangman extends HTMLCanvasElement {
 
         this.setAttribute("class", "hangman-img");
 
-
-        debugger
         let img = document.createElement("img");
         img.src = this.getAttribute("src");
-        let size = Number.parseInt(this.getAttribute("size") ?? 1000);
+        let size = Number.parseInt(this.getDefaultAttribute("size", "1000"));
+
+        debugger
+
         this.getContext("2d").drawImage(img, 0, 0, size, size);
 
     }
 
+    /**
+     * Checks if a certain attribute exists in the canvas;
+     * if it does, then return that attribute, if not,
+     * return the default value
+     * @param {string} qualifiedName Name of the attribute to get
+     * @param {string} defaultValue Default value of the attribute
+     * @returns The attribute or the default value
+     */
     getDefaultAttribute(qualifiedName, defaultValue) {
         if (this.hasAttribute(qualifiedName))
             return this.getAttribute(qualifiedName);
