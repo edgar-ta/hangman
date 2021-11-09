@@ -1,3 +1,5 @@
+import { Color, Hangman } from "./scripts/hangman.js";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 function populateLetterPanel() {
@@ -15,3 +17,5 @@ document.querySelector("#guessForm").addEventListener("submit", (e) => {
 })
 
 populateLetterPanel();
+
+customElements.define("hangman-canvas", Hangman, {"extends": "canvas"});
