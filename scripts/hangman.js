@@ -8,7 +8,7 @@ class Color {
     * @type {string[]}
     */
     static hexDigits = [
-        '0', '1', '2', '3', '4', '5', '6', '7', 
+        '0', '1', '2', '3', '4', '5', '6', '7',
         '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     ];
 
@@ -16,13 +16,13 @@ class Color {
      * Red value of the color
      * @type {number}
      */
-    r; 
+    r;
 
     /**
      * Green value of the color
      * @type {number}
      */
-    g; 
+    g;
 
     /**
      * Blue value of the color
@@ -60,8 +60,10 @@ class Color {
      * @returns {number} Integer corresponding to the string
      */
     static fromHex(doubleDigitString) {
-        let first = Number.parseInt(doubleDigitString.charAt(0));
-        let second = Number.parseInt(doubleDigitString.charAt(1));
+        let firstChar = doubleDigitString.charAt(0);
+        let secondChar = doubleDigitString.charAt(1);
+        let first = Color.hexDigits.indexOf(firstChar);
+        let second = Color.hexDigits.indexOf(secondChar);
         return first * 16 + second;
     }
 
@@ -72,7 +74,7 @@ class Color {
      * @returns {Color} RGB color corresponding to the string
      */
     static colorFromHex(hexString) {
-        let [ r, g, b] = [ hexString.substr(1, 2), hexString.substr(3, 2), hexString.substr(5, 2) ];
+        let [r, g, b] = [hexString.substr(1, 2), hexString.substr(3, 2), hexString.substr(5, 2)];
         return new Color(Color.fromHex(r), Color.fromHex(g), Color.fromHex(b));
     }
 
@@ -83,7 +85,7 @@ class Color {
     toHex() {
         return `#${Color.toHex(this.r)}${Color.toHex(this.g)}${Color.toHex(this.b)}`;
     }
-    
+
     /**
      * Sums 2 colors into 1
      * @param {Color} color First color to sum
@@ -109,7 +111,7 @@ class Hangman extends HTMLCanvasElement {
      * @type {Color}
      */
     currentColor;
-    
+
     /**
      * Delta the hangman will use to advance to another stage
      * @type {Color} 
@@ -125,12 +127,12 @@ class Hangman extends HTMLCanvasElement {
      */
     constructor() {
         super();
-        
-        let maxMistakes = Number.parseInt(this.getAttribute("max-mistakes")) ?? 10;
-        let initialColor = Color.colorFromHex(this.getAttribute("initial-color") ?? "#ffffff");
-        let finalColor = Color.colorFromHex(this.getAttribute("final-color") ?? "#0000ff");
+
+        let maxMistakes = Number.parseInt(this.getDefaultAttribute("max-mistakes", "10"));
+        let initialColor = Color.colorFromHex(this.getDefaultAttribute("initial-color", "#ffffff"));
+        let finalColor = Color.colorFromHex(this.getDefaultAttribute("final-color", "#0000ff"));
         let sum = Color.sum(initialColor, finalColor);
-        
+
         this.remainingMistakes = maxMistakes;
         this.currentColor = initialColor;
         this.delta = new Color(
@@ -139,11 +141,21 @@ class Hangman extends HTMLCanvasElement {
             sum.b / (maxMistakes + 1)
         );
 
+        this.setAttribute("class", "hangman-img");
+
+
+        debugger
         let img = document.createElement("img");
         img.src = this.getAttribute("src");
-        let width = this.offsetWidth;
-        let height = this.offsetHeight;
-        this.getContext("2d").drawImage(img, 0, 0, width, height);
+        let size = Number.parseInt(this.getAttribute("size") ?? 1000);
+        this.getContext("2d").drawImage(img, 0, 0, size, size);
+
+    }
+
+    getDefaultAttribute(qualifiedName, defaultValue) {
+        if (this.hasAttribute(qualifiedName))
+            return this.getAttribute(qualifiedName);
+        return defaultValue;
     }
 
     /**
