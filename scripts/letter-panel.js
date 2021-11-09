@@ -16,11 +16,11 @@ export class LetterPanel extends HTMLDivElement {
      * Generates the letters that will occupy the panel
      */
     populate() {
-        for (let char of ALPHABET) {
+        for (let char of LetterPanel.ALPHABET) {
             let letter = document.createElement("button");
             letter.setAttribute("class", "letter-panel__button");
             letter.innerText = char;
-            this.appendChild(letter);
+            this.append(letter);
             this.letters.push(letter);
         }
     }
