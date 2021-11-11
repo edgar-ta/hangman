@@ -1,5 +1,11 @@
 import Categories from "../res/categories.js"
 
+/**
+ * Class featuring useful methods for the control of words
+ * in the game.
+ * 
+ * Words must be at least 4 characters long
+ */
 export class Word {
     /**
      * Actual content of the word

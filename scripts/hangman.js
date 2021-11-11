@@ -177,15 +177,17 @@ class Hangman extends HTMLCanvasElement {
         this.setAttribute("class", "hangman-img");
 
         let img = document.createElement("img");
-        img.src = this.getAttribute("src");
-        let size = Number.parseInt(this.getDefaultAttribute("size", "1000"));
+        img.src = this.getDefaultAttribute("src", "./res/hangman.png");
 
-        this.setAttribute("width", `${size}`);
-        this.setAttribute("height", `${size}`);
+        let width = img.width;
+        let height =  img.height;
+
+        this.setAttribute("width", width);
+        this.setAttribute("height", height);
 
         window.onload = () => {
-            this.getContext("2d").drawImage(img, 0, 0, size, size);
-        }
+            this.getContext("2d").drawImage(img, 0, 0, width, height);
+        };
     }
 
     /**
