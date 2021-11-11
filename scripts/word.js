@@ -1,3 +1,5 @@
+import Categories from "../res/categories.js"
+
 export class Word {
     /**
      * Actual content of the word
@@ -39,9 +41,8 @@ export class Word {
     getMatchingPositions(letter) {
         let positions = [];
         let matches = this.content.matchAll(new RegExp(`${letter}`, "gi"));
-        for (match of matches) {
-            console.log(match);
-        }
+        for (let match of matches) positions.push(match.index);
+        return positions;
     }
 
     /**
@@ -51,9 +52,60 @@ export class Word {
      */
     static getDifferentLetters(content) {
         let res = [];
-        for (letter of content) {
+        for (let letter of content) {
             if (!res.includes(letter)) res.push(letter);
         }
         return res;
+    }
+
+    /**
+     * Gets a random category and content that then
+     * uses to create a word
+     * @returns {Promise<Response>} Promise featuring the word of random category and content
+     */
+    static async getRandomWord() {
+        let category = Word.getRandomCategory();
+        let content = this.getRandomContent();
+        return content
+        .catch(_ => new Word("programming", "technology"))
+        .then(content => new Word(content, category));
+    }
+
+    /**
+     * Checks within the collection of allowed categories and gets a random one
+     * @returns {string} Random category
+     */
+    static getRandomCategory() {
+        return Word.randomElement(Categories);
+    }
+
+    /**
+     * Queries the datamuse API and gets a word related to the category passed
+     * 
+     * The content of the word should be at least 4 letters long (to avoid
+     * unexpected results the API has)
+     * @param {string} category Category the content should be related to
+     * @returns {Promise<Response>} Promise that responses a string related to the category
+     */
+    static async getRandomContent(category) {
+        let params = {
+            sp: "????*",
+            max: 60,
+            topics: category
+        };
+        let url = new URL("https://api.datamuse.com/words");
+        url.search = new URLSearchParams(params).toString();
+        return fetch(url)
+        .then(res => res.json())
+        .then(arr => Word.randomElement(arr)["word"]);
+    }
+
+    /**
+     * Gets an element at a random index from an array
+     * @param {any[]} array Array to get an element from
+     * @returns {any} Random element
+     */
+    static randomElement(array) {
+        return array[~~(Math.random() * array.length)];
     }
 }
