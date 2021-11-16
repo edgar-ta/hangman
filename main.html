@@ -17,15 +17,29 @@
         </div>
     </div>
     <div class="wrapper">
-        <canvas src="res/hangman.png" is="hangman-canvas" size="376"></canvas>
+        <canvas is="hangman-canvas"></canvas>
         <div class="control-panel">
-            <div class="letter-space-panel"></div>
+            <div is="letter-space-panel"></div>
             <div is="letter-panel"></div>
             <form id="guessForm" class="guess-form">
                 <input type="text" name="singleLetter" id="singleLetterIn" placeholder="Single Letter" maxlength="1" class="guess-form__in">
                 <input type="text" name="wholeWord" id="wholeWordIn" placeholder="Whole Word" class="guess-form__in">
                 <input type="submit" value="Try Guess" class="guess-form__in guess-form__in--submit">
             </form>
+        </div>
+        <div class="hud-panel">
+            <label>
+                Rounds Played:
+                <output id="roundsPlayedOut">0</output>
+            </label>
+            <label>
+                Rounds Won:
+                <output id="roundsWonOut">0</output>
+            </label>
+            <label>
+                Points Made:
+                <output id="pointsMadeOut">0</output>
+            </label>
         </div>
     </div>
 </body>
