@@ -67,14 +67,12 @@ export class Word {
     /**
      * Gets a random category and content that then
      * uses to create a word
-     * @returns {Promise<Response>} Promise featuring the word of random category and content
+     * @returns {Promise<Response>} Promise featuring a word of random category and content
      */
     static async getRandomWord() {
         let category = Word.getRandomCategory();
-        let content = this.getRandomContent();
-        return content
-        .catch(_ => new Word("programming", "technology"))
-        .then(content => new Word(content, category));
+        let content = await this.getRandomContent(category);
+        return new Word(content, category);
     }
 
     /**
@@ -91,7 +89,7 @@ export class Word {
      * The content of the word should be at least 4 letters long (to avoid
      * unexpected results the API has)
      * @param {string} category Category the content should be related to
-     * @returns {Promise<Response>} Promise that responses a string related to the category
+     * @returns {string} A word related to the category
      */
     static async getRandomContent(category) {
         let params = {
@@ -101,7 +99,7 @@ export class Word {
         };
         let url = new URL("https://api.datamuse.com/words");
         url.search = new URLSearchParams(params).toString();
-        return fetch(url)
+        return await fetch(url)
         .then(res => res.json())
         .then(arr => Word.randomElement(arr)["word"]);
     }

@@ -152,18 +152,27 @@ class Hangman extends HTMLCanvasElement {
     delta;
 
     /**
-     * Simple constructor
-     * @constructor Simple constructor
-     * @param {number} maxMistakes Maximum number of mistakes a user can make before the hangman gets hung
-     * @param {Color} initialColor Hexadecimal color the hangman will start with
-     * @param {Color} finalColor Hexadecimal color the hangman will end up with (when completely hung)
+     * Inits its colors and image, also, sets its class to `hangman-img`
+     * @constructor
      */
     constructor() {
         super();
+        this.initColor(
+            this.getDefaultAttribute("max-mistakes", "10"), 
+            this.getDefaultAttribute("initial-color", "#ffffff"), 
+            this.getDefaultAttribute("final-color", "#0000ff")
+        );
+        this.initImage();
+        this.setAttribute("class", "hangman-img");
+    }
 
-        let maxMistakes = Number.parseInt(this.getDefaultAttribute("max-mistakes", "10"));
-        let initialColor = Color.colorFromHex(this.getDefaultAttribute("initial-color", "#ffffff"));
-        let finalColor = Color.colorFromHex(this.getDefaultAttribute("final-color", "#0000ff"));
+    /**
+     * Handles the creation of its delta base on the parameters below
+     * @param {string} maxMistakes Maximum number of mistakes a user can make before the hangman is hung
+     * @param {string} initialColor Color the hangman will start with
+     * @param {string} finalColor Color the hangman will end up with (when completely hung)
+     */
+    initColor(maxMistakes, initialColor, finalColor) {
         let sub = Color.sub(finalColor, initialColor);
 
         this.remainingMistakes = maxMistakes;
@@ -173,11 +182,14 @@ class Hangman extends HTMLCanvasElement {
             sub.g / (maxMistakes + 1),
             sub.b / (maxMistakes + 1)
         );
+    }
 
-        this.setAttribute("class", "hangman-img");
-
+    /**
+     * Draws the image of the hangman
+     */
+    initImage() {
         let img = document.createElement("img");
-        img.src = this.getDefaultAttribute("src", "./res/hangman.png");
+        img.src = "../res/hangman.png";
 
         let width = img.width;
         let height =  img.height;
@@ -210,7 +222,6 @@ class Hangman extends HTMLCanvasElement {
      * and colors the head
      */
     advanceStage() {
-        // debugger
         this.currentColor = Color.sum(this.currentColor, this.delta);
         this.remainingMistakes--;
         this.colorHead();
@@ -232,6 +243,13 @@ class Hangman extends HTMLCanvasElement {
      */
     isHung() {
         return this.remainingMistakes <= 0;
+    }
+
+    /**
+     * Un-paints the head; takes off any color that it had before
+     */
+    cleanHead() {
+        this.getContext("2d").clearRect(Hangman.HEAD_X - Hangman.HEAD_R, Hangman.HEAD_Y - Hangman.HEAD_R, Hangman.HEAD_R, Hangman.HEAD_R);
     }
 }
 
